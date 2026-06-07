@@ -1,10 +1,8 @@
 import streamlit as st
 
-<<<<<<< HEAD
+
 st.title("🧮  My Web Calculator")
-=======
-st.title("🧮 ကျွန်ုပ်၏ Web Calculator")
->>>>>>> c6e796683eed3f81c783ffaee4649685ee0dfd32
+
 
 num1 = st.number_input("ပထမဂဏန်း ရိုက်ထည့်ပါ", value=0.0)
 num2 = st.number_input("ဒုတိယဂဏန်း ရိုက်ထည့်ပါ", value=0.0)
