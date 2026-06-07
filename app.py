@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("🧮 ကျွန်ုပ်၏ Web Calculator")
+st.title("🧮  My Web Calculator")
 
 num1 = st.number_input("ပထမဂဏန်း ရိုက်ထည့်ပါ", value=0.0)
 num2 = st.number_input("ဒုတိယဂဏန်း ရိုက်ထည့်ပါ", value=0.0)
@@ -21,3 +21,5 @@ if st.button("တွက်ချက်မည်"):
             result = "Error (သုညဖြင့် စား၍မရပါ)"
             
     st.success(f"ရလဒ်မှာ = {result}")
+    st.markdown("------")
+    st.write("Developed by AKKW")
