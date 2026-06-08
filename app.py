@@ -22,10 +22,10 @@ if st.button("တွက်ချက်မည်"):
         else:
             result = "Error (သုညဖြင့် စား၍မရပါ)"
             
-<<<<<<< HEAD
+
     st.success(f"ရလဒ်မှာ = {result}")
     st.markdown("------")
     st.write("Developed by AKKW")
-=======
+
     st.success(f"ရလဒ်မှာ = {result}")
->>>>>>> c6e796683eed3f81c783ffaee4649685ee0dfd32
+
