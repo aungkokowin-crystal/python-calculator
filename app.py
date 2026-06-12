@@ -105,7 +105,7 @@ st.markdown(
     /* Buttons — responsive circular keys */
     .stButton > button {
         width:100%;
-        height:clamp(96px, 28vw, 150px);
+        height:clamp(76px, 21vw, 115px);
         border-radius:50%; border:none;
         font-size:clamp(3.8rem, 18vw, 5rem); font-weight:600;
         padding:0 !important;
