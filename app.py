@@ -12,6 +12,32 @@ if "just_evaled" not in st.session_state:
 OPS = {"÷": "/", "×": "*", "−": "-", "+": "+"}
 
 
+# ---------- Database (optional) ----------
+def get_conn():
+    """Return a SQL connection if secrets are configured, else None."""
+    try:
+        return st.connection("history", type="sql")
+    except Exception:
+        return None
+
+
+def save_history(expr, result):
+    conn = get_conn()
+    if conn is None:
+        return
+    try:
+        from sqlalchemy import text
+        with conn.session as s:
+            s.execute(
+                text("INSERT INTO history (expr, result) VALUES (:e, :r)"),
+                {"e": str(expr), "r": str(result)},
+            )
+            s.commit()
+    except Exception:
+        pass
+
+
+# ---------- Calculator logic ----------
 def press(key):
     e = st.session_state.expr
 
@@ -43,6 +69,7 @@ def press(key):
             val = eval(_safe(e))
             if val == int(val):
                 val = int(val)
+            save_history(e, val)
             st.session_state.expr = str(val)
             st.session_state.just_evaled = True
         except Exception:
@@ -91,7 +118,7 @@ st.markdown(
         box-shadow: inset 0 0 0 1px #2c2c2e;
     }
 
-    /* Keep the 4-button rows horizontal on mobile (Streamlit stacks them by default) */
+    /* Keep the 4-button rows horizontal on mobile */
     div[data-testid="stHorizontalBlock"] {
         flex-wrap: nowrap !important;
         gap: 0.5rem !important;
@@ -174,6 +201,23 @@ r5[0].button("⌫", key="back", on_click=press, args=("⌫",), use_container_wid
 r5[1].button("0", key="0", on_click=press, args=("0",), use_container_width=True)
 r5[2].button(".", key="dot", on_click=press, args=(".",), use_container_width=True)
 r5[3].button("=", key="eq", type="primary", on_click=press, args=("=",), use_container_width=True)
+
+# ---------- History ----------
+conn = get_conn()
+if conn is not None:
+    try:
+        rows = conn.query(
+            "SELECT expr, result, created_at FROM history "
+            "ORDER BY created_at DESC LIMIT 15",
+            ttl=0,
+        )
+        with st.expander(f"📜 History ({len(rows)})", expanded=False):
+            if len(rows) == 0:
+                st.caption("မှတ်တမ်း မရှိသေးပါ")
+            for _, row in rows.iterrows():
+                st.markdown(f"**{row['expr']} = {row['result']}**")
+    except Exception:
+        st.caption("⚠️ History table မတွေ့ပါ — Supabase မှာ table ဆောက်ပါ")
 
 # ---------- Footer ----------
 st.markdown(
