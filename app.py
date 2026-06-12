@@ -216,8 +216,8 @@ if conn is not None:
                 st.caption("မှတ်တမ်း မရှိသေးပါ")
             for _, row in rows.iterrows():
                 st.markdown(f"**{row['expr']} = {row['result']}**")
-    except Exception:
-        st.caption("⚠️ History table မတွေ့ပါ — Supabase မှာ table ဆောက်ပါ")
+    except Exception as ex:
+        st.error(f"⚠️ History error:\n\n{type(ex).__name__}: {ex}")
 
 # ---------- Footer ----------
 st.markdown(
