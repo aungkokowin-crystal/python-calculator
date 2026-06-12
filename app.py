@@ -71,25 +71,44 @@ st.markdown(
     """
     <style>
     .stApp { background:#000; }
-    .block-container { max-width:420px; padding-top:1.5rem; }
+    .block-container {
+        max-width:420px;
+        padding-top:1.2rem;
+        padding-left:0.6rem; padding-right:0.6rem;
+    }
 
     .calc-head { text-align:center; color:#fff; font-weight:800;
-        font-size:1.5rem; margin-bottom:0.6rem; }
+        font-size:1.4rem; margin-bottom:0.5rem; }
 
     /* Display */
     .display {
-        background:#1c1c1e; border-radius:20px; padding:1.6rem 1.4rem;
-        text-align:right; color:#fff; font-size:3rem; font-weight:300;
-        min-height:90px; line-height:1.2; margin-bottom:1rem;
+        background:#1c1c1e; border-radius:20px;
+        padding:1.3rem 1.2rem;
+        text-align:right; color:#fff;
+        font-size:clamp(2rem, 9vw, 3rem); font-weight:300;
+        min-height:80px; line-height:1.2; margin-bottom:0.8rem;
         overflow-x:auto; word-break:break-all;
         box-shadow: inset 0 0 0 1px #2c2c2e;
     }
 
-    /* Buttons fill cell, circular */
+    /* Keep the 4-button rows horizontal on mobile (Streamlit stacks them by default) */
+    div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        gap: 0.5rem !important;
+    }
+    div[data-testid="stColumn"], div[data-testid="column"] {
+        min-width: 0 !important;
+        width: auto !important;
+        flex: 1 1 0 !important;
+    }
+
+    /* Buttons — responsive circular keys */
     .stButton > button {
-        width:100%; aspect-ratio:1/1; min-height:70px;
+        width:100%;
+        height:clamp(52px, 17vw, 78px);
         border-radius:50%; border:none;
-        font-size:1.7rem; font-weight:500;
+        font-size:clamp(1.2rem, 5.5vw, 1.7rem); font-weight:500;
+        padding:0 !important;
         transition:filter .12s ease, transform .08s ease;
     }
     .stButton > button:active { transform:scale(0.94); }
