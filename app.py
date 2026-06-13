@@ -1,7 +1,7 @@
 import streamlit as st
 
 # ---------- Page setup ----------
-st.set_page_config(page_title="AKKW Calculator", page_icon="🧮", layout="centered")
+st.set_page_config(page_title="Calculator", page_icon="🧮", layout="centered")
 
 # ---------- State ----------
 if "expr" not in st.session_state:
@@ -14,7 +14,6 @@ OPS = {"÷": "/", "×": "*", "−": "-", "+": "+"}
 
 # ---------- Database (optional) ----------
 def get_conn():
-    """Return a SQL connection if secrets are configured, else None."""
     try:
         return st.connection("history", type="sql")
     except Exception:
@@ -46,10 +45,6 @@ def press(key):
         st.session_state.just_evaled = False
         return
 
-    if key == "⌫":
-        st.session_state.expr = e[:-1]
-        return
-
     if key == "±":
         if e and e[0] == "-":
             st.session_state.expr = e[1:]
@@ -76,9 +71,8 @@ def press(key):
             st.session_state.expr = "Error"
         return
 
-    # digit / dot / operator
     if st.session_state.just_evaled and key not in OPS:
-        e = ""  # start fresh after a result if a number is pressed
+        e = ""
     st.session_state.just_evaled = False
     if e == "Error":
         e = ""
@@ -93,35 +87,36 @@ def _safe(e):
     return e
 
 
-# ---------- Styling ----------
+# ---------- iPhone-style CSS ----------
 st.markdown(
     """
     <style>
     .stApp { background:#000; }
     .block-container {
-        max-width:420px;
-        padding-top:1.2rem;
-        padding-left:0.6rem; padding-right:0.6rem;
+        max-width:430px;
+        padding:2rem 0.9rem 1rem 0.9rem;
+        font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
+            "Helvetica Neue", Arial, sans-serif;
     }
 
-    .calc-head { text-align:center; color:#fff; font-weight:800;
-        font-size:1.4rem; margin-bottom:0.5rem; }
-
-    /* Display */
+    /* Display — big, thin, right-aligned, no box (like iPhone) */
     .display {
-        background:#1c1c1e; border-radius:20px;
-        padding:1.3rem 1.2rem;
-        text-align:right; color:#fff;
-        font-size:clamp(2rem, 9vw, 3rem); font-weight:300;
-        min-height:80px; line-height:1.2; margin-bottom:0.8rem;
-        overflow-x:auto; word-break:break-all;
-        box-shadow: inset 0 0 0 1px #2c2c2e;
+        color:#fff; text-align:right;
+        font-weight:200;
+        font-size:clamp(3.6rem, 22vw, 6rem);
+        line-height:1.1;
+        padding:0 0.4rem 1.2rem 0.4rem;
+        min-height:96px;
+        overflow-x:auto; white-space:nowrap;
+        font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
+            "Helvetica Neue", Arial, sans-serif;
     }
 
-    /* Keep the 4-button rows horizontal on mobile */
+    /* Rows stay horizontal; tight iPhone spacing */
     div[data-testid="stHorizontalBlock"] {
         flex-wrap: nowrap !important;
-        gap: 0.5rem !important;
+        gap: 0.55rem !important;
+        margin-bottom: 0.55rem;
     }
     div[data-testid="stColumn"], div[data-testid="column"] {
         min-width: 0 !important;
@@ -129,47 +124,59 @@ st.markdown(
         flex: 1 1 0 !important;
     }
 
-    /* Buttons — responsive circular keys */
+    /* All keys */
     .stButton > button {
         width:100%;
-        height:clamp(76px, 21vw, 115px);
-        border-radius:50%; border:none;
-        font-size:clamp(3.8rem, 18vw, 5rem); font-weight:600;
+        height:clamp(72px, 19vw, 88px);
+        border-radius:999px;
+        border:none;
+        font-weight:400;
+        font-size:clamp(1.9rem, 9vw, 2.5rem);
         padding:0 !important;
-        transition:filter .12s ease, transform .08s ease;
+        transition:filter .1s ease, transform .06s ease;
+        font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
+            "Helvetica Neue", Arial, sans-serif;
     }
-    .stButton > button:active { transform:scale(0.94); }
+    .stButton > button:active { transform:scale(0.95); }
 
     /* Digits = dark gray */
     button[kind="secondary"], button[data-testid*="secondary"] {
-        background:#333 !important; color:#fff !important;
+        background:#333333 !important; color:#fff !important;
     }
-    button[kind="secondary"]:hover, button[data-testid*="secondary"]:hover {
-        filter:brightness(1.3); color:#fff !important;
-    }
-    /* Operators = orange */
+    button[kind="secondary"]:hover { background:#737373 !important; color:#fff !important; }
+
+    /* Operators (÷ × − + =) = orange */
     button[kind="primary"], button[data-testid*="primary"] {
-        background:#ff9500 !important; color:#fff !important;
+        background:#ff9f0a !important; color:#fff !important;
     }
-    button[kind="primary"]:hover, button[data-testid*="primary"]:hover {
-        filter:brightness(1.1); color:#fff !important;
+    button[kind="primary"]:hover { filter:brightness(1.12); color:#fff !important; }
+
+    /* Top-row function keys (AC ± %) = light gray, dark text */
+    div[data-testid="stHorizontalBlock"]:nth-of-type(1)
+        div[data-testid="stColumn"]:nth-child(-n+3) button,
+    div[data-testid="stHorizontalBlock"]:nth-of-type(1)
+        div[data-testid="column"]:nth-child(-n+3) button {
+        background:#a5a5a5 !important; color:#000 !important;
+    }
+    div[data-testid="stHorizontalBlock"]:nth-of-type(1)
+        div[data-testid="stColumn"]:nth-child(-n+3) button:hover,
+    div[data-testid="stHorizontalBlock"]:nth-of-type(1)
+        div[data-testid="column"]:nth-child(-n+3) button:hover {
+        filter:brightness(1.1); color:#000 !important;
     }
 
-    .footer { text-align:center; margin-top:1.4rem; color:#888;
-        font-size:0.9rem; }
-    .footer .name { font-weight:800; color:#ff9500; }
+    .footer { text-align:center; margin-top:1.4rem; color:#666;
+        font-size:0.85rem; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ---------- Header + display ----------
-st.markdown('<div class="calc-head">🧮 AKKW Calculator</div>', unsafe_allow_html=True)
-
+# ---------- Display ----------
 shown = st.session_state.expr if st.session_state.expr else "0"
 st.markdown(f'<div class="display">{shown}</div>', unsafe_allow_html=True)
 
-# ---------- Keypad ----------
+# ---------- Keypad (iPhone layout) ----------
 # Row 1: AC ± % ÷
 r1 = st.columns(4)
 r1[0].button("AC", key="AC", on_click=press, args=("AC",), use_container_width=True)
@@ -195,12 +202,11 @@ for i, d in enumerate(["1", "2", "3"]):
     r4[i].button(d, key=d, on_click=press, args=(d,), use_container_width=True)
 r4[3].button("+", key="add", type="primary", on_click=press, args=("+",), use_container_width=True)
 
-# Row 5: ⌫ 0 . =
-r5 = st.columns(4)
-r5[0].button("⌫", key="back", on_click=press, args=("⌫",), use_container_width=True)
-r5[1].button("0", key="0", on_click=press, args=("0",), use_container_width=True)
-r5[2].button(".", key="dot", on_click=press, args=(".",), use_container_width=True)
-r5[3].button("=", key="eq", type="primary", on_click=press, args=("=",), use_container_width=True)
+# Row 5: 0 (wide) . =
+r5 = st.columns([2, 1, 1])
+r5[0].button("0", key="0", on_click=press, args=("0",), use_container_width=True)
+r5[1].button(".", key="dot", on_click=press, args=(".",), use_container_width=True)
+r5[2].button("=", key="eq", type="primary", on_click=press, args=("=",), use_container_width=True)
 
 # ---------- History ----------
 conn = get_conn()
@@ -220,7 +226,4 @@ if conn is not None:
         st.error(f"⚠️ History error:\n\n{type(ex).__name__}: {ex}")
 
 # ---------- Footer ----------
-st.markdown(
-    '<div class="footer">Developed by <span class="name">AKKW</span></div>',
-    unsafe_allow_html=True,
-)
+st.markdown('<div class="footer">Developed by AKKW</div>', unsafe_allow_html=True)
