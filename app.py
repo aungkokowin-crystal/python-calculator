@@ -194,6 +194,15 @@ st.markdown(
 
     .footer { text-align:center; margin-top:1.1rem; color:#666;
         font-size:0.78rem; }
+
+    /* History expander label — green + bold */
+    [data-testid="stExpander"] summary p,
+    [data-testid="stExpander"] summary span,
+    [data-testid="stExpander"] summary {
+        color:#30d158 !important;
+        font-weight:700 !important;
+    }
+    [data-testid="stExpander"] summary svg { fill:#30d158 !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -243,7 +252,11 @@ if conn is not None:
             if len(rows) == 0:
                 st.caption("မှတ်တမ်း မရှိသေးပါ")
             for _, row in rows.iterrows():
-                st.markdown(f"**{row['expr']} = {row['result']}**")
+                st.markdown(
+                    f'<div style="color:#30d158;font-weight:700;'
+                    f'font-size:1.05rem;">{row["expr"]} = {row["result"]}</div>',
+                    unsafe_allow_html=True,
+                )
     except Exception as ex:
         st.error(f"⚠️ History error:\n\n{type(ex).__name__}: {ex}")
 
