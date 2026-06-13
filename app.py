@@ -87,86 +87,113 @@ def _safe(e):
     return e
 
 
-# ---------- iPhone-style CSS ----------
+# ---------- 3D / framed CSS (smaller) ----------
 st.markdown(
     """
     <style>
-    .stApp { background:#000; }
+    .stApp { background: radial-gradient(circle at 50% 0%, #2a2a30 0%, #0a0a0c 70%); }
+
+    /* Calculator BODY = frame + 3D float */
     .block-container {
-        max-width:430px;
-        padding:2rem 0.9rem 1rem 0.9rem;
+        max-width: 330px;
+        margin-top: 1.4rem;
+        padding: 1.1rem 0.95rem 1.3rem 0.95rem !important;
+        background: linear-gradient(160deg, #2c2c30 0%, #161618 100%);
+        border: 2px solid #3c3c42;
+        border-radius: 34px;
+        box-shadow:
+            0 22px 55px rgba(0,0,0,0.75),
+            0 4px 10px rgba(0,0,0,0.5),
+            inset 0 1px 1px rgba(255,255,255,0.10),
+            inset 0 -2px 4px rgba(0,0,0,0.4);
         font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
             "Helvetica Neue", Arial, sans-serif;
     }
 
-    /* Display — big, thin, right-aligned, no box (like iPhone) */
+    /* Display — recessed (inset) screen */
     .display {
-        color:#fff; text-align:right;
-        font-weight:200;
-        font-size:clamp(3.6rem, 22vw, 6rem);
+        color:#fff; text-align:right; font-weight:200;
+        font-size:clamp(2.4rem, 14vw, 3.6rem);
         line-height:1.1;
-        padding:0 0.4rem 1.2rem 0.4rem;
-        min-height:96px;
+        padding:0.8rem 0.9rem;
+        min-height:64px; margin-bottom:0.8rem;
         overflow-x:auto; white-space:nowrap;
-        font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
-            "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(160deg, #0b0b0d, #1b1b1e);
+        border: 1px solid #2d2d32;
+        border-radius: 16px;
+        box-shadow: inset 0 4px 10px rgba(0,0,0,0.85),
+                    inset 0 -1px 1px rgba(255,255,255,0.05);
+        font-family:inherit;
     }
 
-    /* Rows stay horizontal; tight iPhone spacing */
+    /* Rows */
     div[data-testid="stHorizontalBlock"] {
         flex-wrap: nowrap !important;
-        gap: 0.55rem !important;
-        margin-bottom: 0.55rem;
+        gap: 0.45rem !important;
+        margin-bottom: 0.45rem;
     }
     div[data-testid="stColumn"], div[data-testid="column"] {
-        min-width: 0 !important;
-        width: auto !important;
-        flex: 1 1 0 !important;
+        min-width: 0 !important; width: auto !important; flex: 1 1 0 !important;
     }
 
-    /* All keys */
+    /* Base keys — smaller + 3D raised */
     .stButton > button {
         width:100%;
-        height:clamp(72px, 19vw, 88px);
+        height:clamp(52px, 15vw, 64px);
         border-radius:999px;
-        border:none;
-        font-weight:400;
-        font-size:clamp(1.9rem, 9vw, 2.5rem);
+        border:1px solid rgba(255,255,255,0.06);
+        font-weight:500;
+        font-size:clamp(1.3rem, 6.2vw, 1.7rem);
         padding:0 !important;
-        transition:filter .1s ease, transform .06s ease;
-        font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display",
-            "Helvetica Neue", Arial, sans-serif;
+        transition:all .08s ease;
+        font-family:inherit;
     }
-    .stButton > button:active { transform:scale(0.95); }
+    .stButton > button:active { transform:translateY(2px) scale(0.97); }
 
-    /* Digits = dark gray */
+    /* Digits = dark gray, 3D */
     button[kind="secondary"], button[data-testid*="secondary"] {
-        background:#333333 !important; color:#fff !important;
+        background: linear-gradient(145deg, #404044, #28282b) !important;
+        color:#fff !important;
+        box-shadow: 4px 4px 9px rgba(0,0,0,0.6),
+                    -3px -3px 7px rgba(255,255,255,0.05) !important;
     }
-    button[kind="secondary"]:hover { background:#737373 !important; color:#fff !important; }
+    button[kind="secondary"]:active {
+        box-shadow: inset 3px 3px 7px rgba(0,0,0,0.7),
+                    inset -2px -2px 5px rgba(255,255,255,0.05) !important;
+    }
 
-    /* Operators (÷ × − + =) = orange */
+    /* Operators = orange, 3D */
     button[kind="primary"], button[data-testid*="primary"] {
-        background:#ff9f0a !important; color:#fff !important;
+        background: linear-gradient(145deg, #ffb849, #f88a00) !important;
+        color:#fff !important;
+        box-shadow: 4px 4px 9px rgba(0,0,0,0.5),
+                    -3px -3px 7px rgba(255,255,255,0.18) !important;
     }
-    button[kind="primary"]:hover { filter:brightness(1.12); color:#fff !important; }
+    button[kind="primary"]:active {
+        box-shadow: inset 3px 3px 7px rgba(180,90,0,0.7),
+                    inset -2px -2px 5px rgba(255,255,255,0.2) !important;
+    }
 
-    /* Top-row function keys (AC ± %) = light gray, dark text */
+    /* Function keys (AC ± %) = light gray, 3D */
     div[data-testid="stHorizontalBlock"]:nth-of-type(1)
         div[data-testid="stColumn"]:nth-child(-n+3) button,
     div[data-testid="stHorizontalBlock"]:nth-of-type(1)
         div[data-testid="column"]:nth-child(-n+3) button {
-        background:#a5a5a5 !important; color:#000 !important;
+        background: linear-gradient(145deg, #c3c3c3, #8f8f8f) !important;
+        color:#000 !important;
+        box-shadow: 4px 4px 9px rgba(0,0,0,0.5),
+                    -3px -3px 7px rgba(255,255,255,0.3) !important;
     }
     div[data-testid="stHorizontalBlock"]:nth-of-type(1)
-        div[data-testid="stColumn"]:nth-child(-n+3) button:hover,
+        div[data-testid="stColumn"]:nth-child(-n+3) button:active,
     div[data-testid="stHorizontalBlock"]:nth-of-type(1)
-        div[data-testid="column"]:nth-child(-n+3) button:hover {
-        filter:brightness(1.1); color:#000 !important;
+        div[data-testid="column"]:nth-child(-n+3) button:active {
+        box-shadow: inset 3px 3px 7px rgba(0,0,0,0.4),
+                    inset -2px -2px 5px rgba(255,255,255,0.4) !important;
     }
 
-    .footer { text-align:center; margin-top:1.4rem; color:#666;
-        font-size:0.85rem; }
+    .footer { text-align:center; margin-top:1.1rem; color:#666;
+        font-size:0.78rem; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -176,33 +203,28 @@ st.markdown(
 shown = st.session_state.expr if st.session_state.expr else "0"
 st.markdown(f'<div class="display">{shown}</div>', unsafe_allow_html=True)
 
-# ---------- Keypad (iPhone layout) ----------
-# Row 1: AC ± % ÷
+# ---------- Keypad ----------
 r1 = st.columns(4)
 r1[0].button("AC", key="AC", on_click=press, args=("AC",), use_container_width=True)
 r1[1].button("±", key="pm", on_click=press, args=("±",), use_container_width=True)
 r1[2].button("%", key="pc", on_click=press, args=("%",), use_container_width=True)
 r1[3].button("÷", key="div", type="primary", on_click=press, args=("÷",), use_container_width=True)
 
-# Row 2: 7 8 9 ×
 r2 = st.columns(4)
 for i, d in enumerate(["7", "8", "9"]):
     r2[i].button(d, key=d, on_click=press, args=(d,), use_container_width=True)
 r2[3].button("×", key="mul", type="primary", on_click=press, args=("×",), use_container_width=True)
 
-# Row 3: 4 5 6 −
 r3 = st.columns(4)
 for i, d in enumerate(["4", "5", "6"]):
     r3[i].button(d, key=d, on_click=press, args=(d,), use_container_width=True)
 r3[3].button("−", key="sub", type="primary", on_click=press, args=("−",), use_container_width=True)
 
-# Row 4: 1 2 3 +
 r4 = st.columns(4)
 for i, d in enumerate(["1", "2", "3"]):
     r4[i].button(d, key=d, on_click=press, args=(d,), use_container_width=True)
 r4[3].button("+", key="add", type="primary", on_click=press, args=("+",), use_container_width=True)
 
-# Row 5: 0 (wide) . =
 r5 = st.columns([2, 1, 1])
 r5[0].button("0", key="0", on_click=press, args=("0",), use_container_width=True)
 r5[1].button(".", key="dot", on_click=press, args=(".",), use_container_width=True)
